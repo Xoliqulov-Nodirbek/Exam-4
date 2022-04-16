@@ -20,6 +20,7 @@ let showingParrots = parrots.slice();
 const parrotsWrapper = document.querySelector(".parrots-wrapper");
 const elCount = document.querySelector(".count")
 
+
 // -------------- > RenderProducts < ------------------
 
 const renderProducts = function() {
@@ -98,8 +99,9 @@ const renderProduct = function(parrot) {
     const elCardBodyBtnEdit = createElement("button", "btn rounded-0 btn-secondary");
     const elCardBodyBtnEditI = createElement("i", "fa-solid fa-pen");
     elCardBodyBtnEdit.setAttribute("data-bs-toggle", "modal"),
-    elCardBodyBtnEdit.setAttribute("data-bs-target", "#edit-student-modal"),
+    elCardBodyBtnEdit.setAttribute("data-bs-target", "#edit-parrot-modal"),
     elCardBodyBtnEdit.setAttribute("data-id", parrot.id),
+    elCardBodyBtnEditI.style.pointerEvents = "none";
     elCardBodyBtnEdit.append(elCardBodyBtnEditI);
     elCardBodyBtnWrapper.append(elCardBodyBtnEdit);
     
@@ -107,6 +109,7 @@ const renderProduct = function(parrot) {
     const elCardBodyBtnDelete = createElement("button", "btn rounded-0 btn-danger");
     const elCardBodyBtnDeleteI = createElement("i", "fa-solid fa-trash");
     elCardBodyBtnDelete.setAttribute("data-id", parrot.id);  
+    elCardBodyBtnDeleteI.style.pointerEvents = "none";
     elCardBodyBtnDelete.append(elCardBodyBtnDeleteI);
     elCardBodyBtnWrapper.append(elCardBodyBtnDelete);
     
@@ -168,7 +171,6 @@ addForm.addEventListener("submit", function(evt) {
         }
         
         parrots.push(newParrot);
-        localStorage.setItem("parrots", JSON.stringify(parrots));
         addForm.reset();
         addProductModal.hide();
         
@@ -229,57 +231,91 @@ Filter.addEventListener("submit", function(evt) {
 }); 
 
 
-// --------------- Delete and Edit product -----------------
+// --------------- Delete Parrots and Edit Parrots -----------------
 
-const edidForm=document.querySelector("#edit-form");
+const editForm = document.querySelector("#edit-form");
+const editProductModalEL = document.querySelector("#edit-parrot-modal");
+const editProductModal = new bootstrap.Modal(editProductModalEL);
 
-edidForm.addEventListener("submit", function(evt){
+const editTitle = document.querySelector("#edit-parrot-title");
+const editImg =document.querySelector("#edit-parrot-img");
+const editPrice = document.querySelector("#edit-price");
+const editBirthDate = document.querySelector("#edit-parrot-date");
+const editWidth = document.querySelector("#edit-parrot_width");
+const editHeight = document.querySelector("#edit-parrot_height");
+
+parrotsWrapper.addEventListener("click", function(evt) {
+    if (evt.target.matches(".btn-danger")) {
+        const clickedItemIndexId = +evt.target.dataset.id;
+        
+        const clickedItemIndex = parrots.findIndex(function (element) {
+            return element.id === clickedItemIndexId; 
+        });
+        parrots.splice(clickedItemIndex, 1);
+        
+        parrotsWrapper.innerHTML = "";
+        
+        parrots.forEach(function (product) {
+            const parrotsLi = renderProduct(product);
+            parrotsWrapper.append(parrotsLi);
+        });
+        
+    } else if (evt.target.matches(".btn-secondary")) {
+        const clickedId = +evt.target.dataset.id;
+        
+        const clickedItemIndex = parrots.find(function (element) {
+            return element.id === clickedId; 
+        });
+        console.log(clickedItemIndex);
+        
+        editTitle.value = clickedItemIndex.title;
+        editImg.value = clickedItemIndex.img;
+        editPrice.value = clickedItemIndex.price;
+        editBirthDate.value = clickedItemIndex.birthDate;
+        editWidth.value = clickedItemIndex.sizes.width;
+        editHeight.value = clickedItemIndex.sizes.height;
+        
+        editForm.setAttribute("data-editing-id", clickedId)
+    }
+    
+});
+
+editForm.addEventListener("submit", function(evt) {
     evt.preventDefault();
-
-    const elements = evt.target.elements
-
-    const editingId = +evt.target.dataset.editingid;
-
-    const editName = elements["parrot-title"];
-    const editImg = elements["parrot-img"];
-    const editPrice = elements["price"];
-    const editParrotBirthday = elements["parrot-date"];
-    const editWidth = elements["parrot_width"];
-    const editHeight = elements["parrot_height"];
-
-    const editNameValue = editName.value;
+    
+    const elements = evt.target.elements;
+    
+    const editingItemId = +elements.dataset.editingId;
+    
+    const editTitleValue = editTitle.value;
     const editImgValue = editImg.value;
-    const editPricevalue = editParrotPrice.value;
-    const editBithdayValue=editParrotBirthday.value;
-    const editWidthValue=editWidth.value;
-    const editHeightValue=editHeight.value;
-
-    if (editNameValue.trim() && editImgValue && (editPricevalue > 0) && editBithdayValue && editWidthValue && editHeightValue) {
-        const editParrot = {
-            id: editingId,
-            title: editNameValue,
+    const editPriceValue = editPrice.value;
+    const editBirthDateValue = editBirthDate.value;
+    const editWidthValue = editWidth.value
+    const editHeightValue = editHeight.value
+    
+    if (editTitleValue.trim() && editImgValue.trim() && editPriceValue.trim() && editBirthDateValue && editWidthValue.trim() && editHeightValue.trim()) {
+        const EditedCard = {
+            id: editingItemId,
+            title: editTitleValue,
             img: editImgValue,
-            price: editPrice,
-            birthDate: editBithdayValue,
+            price: editPriceValue,
+            birthDate: editBirthDateValue,
             sizes: {
                 width: editWidthValue,
                 height: editHeightValue
             },
-            isFavorite: false,
-            features: editParrotFeatures.value
+            isFavorite: null,
+            features: [],
         }
-        const editingItemIndex = products.findIndex(function(product) {
-         return product.id === editingId})
-
-        const editingShowItemIndex =products.findIndex(function(product) {
-        return product.id === editingId})
-
-        console.log(editingItemIndex)
-        products.splice(editingItemIndex, 1, editParrot);  
         
-        showingParrot.splice(editingShowItemIndex, 1, editParrot);
+        const editingItemIndex = parrots.findIndex(function (element) {
+            return element.id == editingItemId; 
+        });
+        
+        parrots.splice(editingItemIndex, 1, EditedCard);
+        editForm.reset();
+        editProductModal.hide();
+        renderProducts();
     }
-        parrotFor();
-        editParrot.reset();
-})
-    
+});
