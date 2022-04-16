@@ -312,6 +312,7 @@ editForm.addEventListener("submit", function(evt) {
             return element.id == editingItemId; 
         });
         
+        parrots.splice(editingItemIndex, 1, EditedCard);
         showingParrots.splice(editingItemIndex, 1, EditedCard);
         editForm.reset();
         editProductModal.hide();
