@@ -283,9 +283,8 @@ parrotsWrapper.addEventListener("click", function(evt) {
 editForm.addEventListener("submit", function(evt) {
     evt.preventDefault();
     
-    const elements = evt.target.elements;
     
-    const editingItemId = +elements.dataset.editingId;
+    const editingItemId = +evt.target.dataset.editingId;
     
     const editTitleValue = editTitle.value;
     const editImgValue = editImg.value;
@@ -305,7 +304,7 @@ editForm.addEventListener("submit", function(evt) {
                 width: editWidthValue,
                 height: editHeightValue
             },
-            isFavorite: null,
+            isFavorite: false,
             features: [],
         }
         
@@ -313,7 +312,7 @@ editForm.addEventListener("submit", function(evt) {
             return element.id == editingItemId; 
         });
         
-        parrots.splice(editingItemIndex, 1, EditedCard);
+        showingParrots.splice(editingItemIndex, 1, EditedCard);
         editForm.reset();
         editProductModal.hide();
         renderProducts();
