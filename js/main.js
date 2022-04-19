@@ -25,7 +25,7 @@ const elCount = document.querySelector(".count")
 
 const renderProducts = function() {
     parrotsWrapper.innerHTML = "";
-    elCount.textContent = `Count: ${showingParrots.length}`
+    elCount.textContent = `Count: ${showingParrots.length}`;
     
     showingParrots.forEach(function(parrot) {
         const parrotsLi = renderProduct(parrot);
@@ -121,13 +121,7 @@ const renderProduct = function(parrot) {
     return parrotsLi;
 }
 
-// ------------ Wrapper Appends ------------
-
-for (let i = 0; i < parrots.length; i++) {
-    const parrotsLi = renderProduct(parrots[i]);
-    
-    parrotsWrapper.append(parrotsLi);
-};
+renderProducts();
 
 // --------------  Add Parrot  ---------------
 
