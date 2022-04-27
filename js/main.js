@@ -175,9 +175,9 @@ addForm.addEventListener("submit", function(evt) {
 
 // ------------- Filter product ------------
 
-const Filter = document.querySelector("#filter-form");
+const filter = document.querySelector("#filter-form");
 
-Filter.addEventListener("submit", function(evt) {
+filter.addEventListener("submit", function(evt) {
     evt.preventDefault();
     
     const elements = evt.target.elements;
@@ -240,6 +240,7 @@ const editHeight = document.querySelector("#edit-parrot_height");
 
 parrotsWrapper.addEventListener("click", function(evt) {
     if (evt.target.matches(".btn-danger")) {
+        
         const clickedItemIndexId = +evt.target.dataset.id;
         
         const clickedItemIndex = parrots.findIndex(function (element) {
@@ -260,7 +261,6 @@ parrotsWrapper.addEventListener("click", function(evt) {
         const clickedItemIndex = parrots.find(function (element) {
             return element.id === clickedId; 
         });
-        console.log(clickedItemIndex);
         
         editTitle.value = clickedItemIndex.title;
         editImg.value = clickedItemIndex.img;
